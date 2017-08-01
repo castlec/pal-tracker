@@ -1,19 +1,15 @@
 package io.pivotal.pal.tracker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-
-/**
- * Created by accenturelabs on 8/1/17.
- */
 public class InMemoryTimeEntryRepository implements TimeEntryRepository {
-    private Map<Long, TimeEntry> timeEntries = new HashMap<>();
-    long lastId;
-
+    private HashMap<Long, TimeEntry> timeEntries = new HashMap<>();
 
     @Override
     public TimeEntry create(TimeEntry timeEntry) {
-        timeEntry.setId(++lastId);
+        timeEntry.setId(timeEntries.size() + 1);
         timeEntries.put(timeEntry.getId(), timeEntry);
         return timeEntry;
     }
@@ -21,20 +17,17 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
     @Override
     public TimeEntry find(Long id) {
         return timeEntries.get(id);
-
     }
 
     @Override
     public List<TimeEntry> list() {
-        Collection<TimeEntry> values = timeEntries.values();
-        return new ArrayList<>(values);
-
+        return new ArrayList<>(timeEntries.values());
     }
 
     @Override
     public TimeEntry update(Long id, TimeEntry timeEntry) {
+        timeEntries.replace(id, timeEntry);
         timeEntry.setId(id);
-        timeEntries.put(timeEntry.getId(), timeEntry);
         return timeEntry;
     }
 

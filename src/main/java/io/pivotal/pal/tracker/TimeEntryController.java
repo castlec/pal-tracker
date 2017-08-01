@@ -1,46 +1,57 @@
 package io.pivotal.pal.tracker;
 
-import io.pivotal.pal.tracker.TimeEntry;
-import io.pivotal.pal.tracker.TimeEntryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Created by accenturelabs on 8/1/17.
- */
 @RestController
+@RequestMapping("/time-entries")
 public class TimeEntryController {
-    private TimeEntryRepository timeEntryRepository;
 
-    public TimeEntryController(TimeEntryRepository timeEntryRepository) {
-        this.timeEntryRepository = timeEntryRepository;
+    private TimeEntryRepository timeEntriesRepo;
+
+    public TimeEntryController(TimeEntryRepository timeEntriesRepo) {
+        this.timeEntriesRepo = timeEntriesRepo;
     }
 
+    @PostMapping
+    public ResponseEntity<TimeEntry> create(@RequestBody TimeEntry timeEntry) {
+        TimeEntry createdTimeEntry = timeEntriesRepo.create(timeEntry);
+
+        return new ResponseEntity<>(createdTimeEntry, HttpStatus.CREATED);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<TimeEntry> read(@PathVariable Long id) {
+        TimeEntry timeEntry = timeEntriesRepo.find(id);
+        if (timeEntry != null) {
+            return new ResponseEntity<>(timeEntry, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping
     public ResponseEntity<List<TimeEntry>> list() {
-        return new ResponseEntity<>(timeEntryRepository.list(), HttpStatus.OK);
+        return new ResponseEntity<>(timeEntriesRepo.list(), HttpStatus.OK);
     }
 
-    public ResponseEntity update(long l, TimeEntry expected) {
-        TimeEntry timeEntry = timeEntryRepository.update(l, expected);
-        HttpStatus status = timeEntry == null ? HttpStatus.NOT_FOUND: HttpStatus.OK;
-        return new ResponseEntity<>(timeEntry, status);
+    @PutMapping("{id}")
+    public ResponseEntity<TimeEntry> update(@PathVariable Long id, @RequestBody TimeEntry timeEntry) {
+        TimeEntry updatedTimeEntry = timeEntriesRepo.update(id, timeEntry);
+        if (updatedTimeEntry != null) {
+            return new ResponseEntity<>(updatedTimeEntry, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    public ResponseEntity<TimeEntry> delete(long l) {
-        timeEntryRepository.delete(l);
-        return new ResponseEntity<TimeEntry>(HttpStatus.NO_CONTENT);
-    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<TimeEntry> delete(@PathVariable Long id) {
+        timeEntriesRepo.delete(id);
 
-    public ResponseEntity<TimeEntry> read(long l) {
-        TimeEntry timeEntry = timeEntryRepository.find(l);
-        HttpStatus status = timeEntry == null ? HttpStatus.NOT_FOUND: HttpStatus.OK;
-        return new ResponseEntity<>(timeEntry, status);
-    }
-
-    public ResponseEntity create(TimeEntry today) {
-        return new ResponseEntity<>(timeEntryRepository.create(today), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
