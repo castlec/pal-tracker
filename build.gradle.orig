@@ -1,11 +1,19 @@
+<<<<<<< HEAD
+plugins {
+    id "java"
+    id "org.springframework.boot" version "1.5.4.RELEASE"
+=======
+
 plugins {
     id "java"
     id 'org.springframework.boot' version '1.5.6.RELEASE'
+>>>>>>> 77cb29189715942ea7938380887d89984573eb7f
 }
 
 repositories {
     mavenCentral()
 }
+<<<<<<< HEAD
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
@@ -19,4 +27,8 @@ bootRun.environment([
 test.environment([
         "WELCOME_MESSAGE": "Hello from test",
 ])
-
+=======
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+}
+>>>>>>> 77cb29189715942ea7938380887d89984573eb7f
