@@ -3,6 +3,6 @@ applications:
   path: build/libs/pal-tracker.jar
   host: cjc-pal-tracker
   services:
-    - tracker-database
- env:
+  - tracker-database
+  env:
      SECURITY_FORCE_HTTPS: true
